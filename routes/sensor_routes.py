@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from services.sensor_service import SensorService
+from services.fuzzy_service import FuzzyService
 import logging
+import numpy as np
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -8,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 sensor_bp = Blueprint('sensor', __name__)
 sensor_service = SensorService()
+fuzzy_service = FuzzyService()
 
 @sensor_bp.route('/sensors', methods=['POST'])
 def save_sensor_data():
@@ -76,4 +79,86 @@ def get_pump_recommendation():
         return jsonify(pump_evaluation), 200
     except Exception as e:
         logger.error(f"Error al obtener recomendación de bomba: {str(e)}")
-        return jsonify({"error": str(e)}), 400 
+        return jsonify({"error": str(e)}), 400
+
+@sensor_bp.route('/pump', methods=['GET'])
+def check_pump():
+    # ... existing code ...
+
+@sensor_bp.route('/membership-functions', methods=['GET'])
+def get_membership_functions():
+    """
+    Retorna los datos de las funciones de pertenencia para visualización
+    """
+    try:
+        # Obtener datos de temperatura
+        temp_data = {
+            'range': fuzzy_service.temp_range.tolist(),
+            'sets': {
+                'fría': fuzzy_service.temperature['fría'].mf.tolist(),
+                'óptima': fuzzy_service.temperature['óptima'].mf.tolist(),
+                'caliente': fuzzy_service.temperature['caliente'].mf.tolist()
+            }
+        }
+
+        # Obtener datos de humedad
+        humidity_data = {
+            'range': fuzzy_service.humidity_range.tolist(),
+            'sets': {
+                'baja': fuzzy_service.humidity['baja'].mf.tolist(),
+                'óptima': fuzzy_service.humidity['óptima'].mf.tolist(),
+                'alta': fuzzy_service.humidity['alta'].mf.tolist()
+            }
+        }
+
+        # Obtener datos de suelo
+        soil_data = {
+            'range': fuzzy_service.soil_range.tolist(),
+            'sets': {
+                'seco': fuzzy_service.soil['seco'].mf.tolist(),
+                'húmedo': fuzzy_service.soil['húmedo'].mf.tolist(),
+                'empapado': fuzzy_service.soil['empapado'].mf.tolist()
+            }
+        }
+
+        # Obtener datos de luz
+        light_data = {
+            'range': fuzzy_service.light_range.tolist(),
+            'sets': {
+                'baja': fuzzy_service.light['baja'].mf.tolist(),
+                'óptima': fuzzy_service.light['óptima'].mf.tolist(),
+                'alta': fuzzy_service.light['alta'].mf.tolist()
+            }
+        }
+
+        # Obtener datos de estado de la planta
+        plant_state_data = {
+            'range': np.arange(0, 100, 1).tolist(),
+            'sets': {
+                'malo': fuzzy_service.plant_state['malo'].mf.tolist(),
+                'regular': fuzzy_service.plant_state['regular'].mf.tolist(),
+                'bueno': fuzzy_service.plant_state['bueno'].mf.tolist()
+            }
+        }
+
+        # Obtener datos de tiempo de bomba
+        pump_time_data = {
+            'range': np.arange(0, 60, 1).tolist(),
+            'sets': {
+                'corto': fuzzy_service.pump_time['corto'].mf.tolist(),
+                'medio': fuzzy_service.pump_time['medio'].mf.tolist(),
+                'largo': fuzzy_service.pump_time['largo'].mf.tolist()
+            }
+        }
+
+        return jsonify({
+            'temperatura': temp_data,
+            'humedad': humidity_data,
+            'suelo': soil_data,
+            'luz': light_data,
+            'estado_planta': plant_state_data,
+            'tiempo_bomba': pump_time_data
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500 

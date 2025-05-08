@@ -34,33 +34,60 @@ class FuzzyService:
         self.light['óptima'] = fuzz.trimf(self.light.universe, [400, 600, 800])
         self.light['alta'] = fuzz.trimf(self.light.universe, [700, 1023, 1023])
 
-        # Crear variable de salida (estado de la planta)
+        # Crear variables de salida
         self.plant_state = ctrl.Consequent(np.arange(0, 100, 1), 'estado_planta')
         self.plant_state['malo'] = fuzz.trimf(self.plant_state.universe, [0, 0, 40])
         self.plant_state['regular'] = fuzz.trimf(self.plant_state.universe, [30, 50, 70])
         self.plant_state['bueno'] = fuzz.trimf(self.plant_state.universe, [60, 100, 100])
 
-        # Definir reglas
+        self.pump_time = ctrl.Consequent(np.arange(0, 60, 1), 'tiempo_bomba')
+        self.pump_time['corto'] = fuzz.trimf(self.pump_time.universe, [0, 0, 20])
+        self.pump_time['medio'] = fuzz.trimf(self.pump_time.universe, [15, 30, 45])
+        self.pump_time['largo'] = fuzz.trimf(self.pump_time.universe, [40, 60, 60])
+
+        # Definir reglas mejoradas
         self.rules = [
-            # Reglas para temperatura
-            ctrl.Rule(self.temperature['fría'], self.plant_state['malo']),
-            ctrl.Rule(self.temperature['óptima'], self.plant_state['bueno']),
-            ctrl.Rule(self.temperature['caliente'], self.plant_state['malo']),
+            # Reglas para estado de la planta
+            ctrl.Rule(
+                (self.temperature['óptima'] & self.humidity['óptima'] & 
+                 self.soil['húmedo'] & self.light['óptima']),
+                self.plant_state['bueno']
+            ),
+            ctrl.Rule(
+                (self.temperature['óptima'] & self.humidity['óptima'] & 
+                 self.soil['húmedo']),
+                self.plant_state['bueno']
+            ),
+            ctrl.Rule(
+                (self.temperature['fría'] | self.temperature['caliente'] | 
+                 self.humidity['baja'] | self.humidity['alta'] | 
+                 self.soil['seco'] | self.soil['empapado'] | 
+                 self.light['baja'] | self.light['alta']),
+                self.plant_state['malo']
+            ),
+            ctrl.Rule(
+                (self.temperature['óptima'] | self.humidity['óptima'] | 
+                 self.soil['húmedo'] | self.light['óptima']),
+                self.plant_state['regular']
+            ),
 
-            # Reglas para humedad ambiente
-            ctrl.Rule(self.humidity['baja'], self.plant_state['malo']),
-            ctrl.Rule(self.humidity['óptima'], self.plant_state['bueno']),
-            ctrl.Rule(self.humidity['alta'], self.plant_state['regular']),
-
-            # Reglas para humedad del suelo
-            ctrl.Rule(self.soil['seco'], self.plant_state['malo']),
-            ctrl.Rule(self.soil['húmedo'], self.plant_state['bueno']),
-            ctrl.Rule(self.soil['empapado'], self.plant_state['regular']),
-
-            # Reglas para luz
-            ctrl.Rule(self.light['baja'], self.plant_state['regular']),
-            ctrl.Rule(self.light['óptima'], self.plant_state['bueno']),
-            ctrl.Rule(self.light['alta'], self.plant_state['regular'])
+            # Reglas para tiempo de bomba
+            ctrl.Rule(
+                (self.soil['seco'] & self.humidity['baja']),
+                self.pump_time['largo']
+            ),
+            ctrl.Rule(
+                (self.soil['seco'] | self.humidity['baja']),
+                self.pump_time['medio']
+            ),
+            ctrl.Rule(
+                (self.soil['húmedo'] & self.humidity['óptima']),
+                self.pump_time['corto']
+            ),
+            ctrl.Rule(
+                (self.soil['empapado'] | self.humidity['alta']),
+                self.pump_time['corto']
+            )
         ]
 
         # Crear sistema de control
@@ -69,8 +96,7 @@ class FuzzyService:
 
     def evaluate_conditions(self, temperatura, humedad, suelo, luz):
         """
-        Evalúa las condiciones actuales y retorna el estado de la planta
-        y recomendaciones
+        Evalúa las condiciones actuales usando lógica difusa
         """
         try:
             # Establecer valores de entrada
@@ -82,35 +108,17 @@ class FuzzyService:
             # Calcular resultado
             self.plant_sim.compute()
 
-            # Obtener estado y convertirlo a float normal
+            # Obtener estado y tiempo de bomba
             estado = float(self.plant_sim.output['estado_planta'])
+            tiempo_bomba = float(self.plant_sim.output['tiempo_bomba'])
 
-            # Generar recomendaciones
-            recomendaciones = []
-            
-            if float(temperatura) < 20:
-                recomendaciones.append("La temperatura es muy baja para la planta")
-            elif float(temperatura) > 30:
-                recomendaciones.append("La temperatura es muy alta para la planta")
-
-            if float(humedad) < 40:
-                recomendaciones.append("La humedad ambiente es muy baja")
-            elif float(humedad) > 80:
-                recomendaciones.append("La humedad ambiente es muy alta")
-
-            if float(suelo) < 400:
-                recomendaciones.append("La planta necesita agua")
-            elif float(suelo) > 800:
-                recomendaciones.append("El suelo está muy húmedo")
-
-            if float(luz) < 400:
-                recomendaciones.append("La planta necesita más luz")
-            elif float(luz) > 800:
-                recomendaciones.append("Hay demasiada luz directa")
+            # Determinar si se debe activar la bomba
+            should_activate = tiempo_bomba > 5  # Solo activar si el tiempo es mayor a 5 segundos
 
             return {
                 "estado": round(estado, 2),
-                "recomendaciones": recomendaciones,
+                "activar_bomba": should_activate,
+                "tiempo_bomba": round(tiempo_bomba, 2),
                 "condiciones": {
                     "temperatura": float(temperatura),
                     "humedad": float(humedad),
@@ -122,82 +130,8 @@ class FuzzyService:
             return {
                 "error": str(e),
                 "estado": 0,
-                "recomendaciones": ["Error al evaluar condiciones"],
-                "condiciones": {
-                    "temperatura": float(temperatura),
-                    "humedad": float(humedad),
-                    "suelo": float(suelo),
-                    "luz": float(luz)
-                }
-            }
-
-    def should_activate_pump(self, temperatura, humedad, suelo, luz):
-        """
-        Evalúa si se debe activar la bomba de agua y por cuánto tiempo
-        basado en las condiciones actuales
-        """
-        try:
-            # Convertir valores a float
-            temp = float(temperatura)
-            hum = float(humedad)
-            soil = float(suelo)
-            light = float(luz)
-
-            # Inicializar variables
-            should_activate = False
-            reason = []
-            tiempo_activacion = 0  # en segundos
-
-            # Verificar suelo (prioridad más alta)
-            if soil < 400:  # Suelo seco
-                should_activate = True
-                reason.append("Suelo seco")
-                # Cuanto más seco, más tiempo
-                tiempo_activacion += (400 - soil) / 2  # 1 segundo por cada 2 unidades de sequedad
-            
-            # Verificar temperatura
-            if temp > 30:  # Temperatura alta
-                should_activate = True
-                reason.append("Temperatura alta")
-                # Cuanto más alta la temperatura, más tiempo
-                tiempo_activacion += (temp - 30) * 2  # 2 segundos por cada grado sobre 30
-            
-            # Verificar humedad ambiente
-            if hum < 40:  # Humedad baja
-                should_activate = True
-                reason.append("Humedad ambiente baja")
-                # Cuanto más baja la humedad, más tiempo
-                tiempo_activacion += (40 - hum)  # 1 segundo por cada punto de humedad faltante
-            
-            # Verificar luz
-            if light > 800:  # Mucha luz
-                should_activate = True
-                reason.append("Exceso de luz")
-                # Cuanto más luz, más tiempo
-                tiempo_activacion += (light - 800) / 100  # 1 segundo por cada 100 unidades de luz extra
-
-            # Ajustar tiempo mínimo y máximo
-            if should_activate:
-                tiempo_activacion = max(5, min(60, tiempo_activacion))  # Mínimo 5 segundos, máximo 60 segundos
-                tiempo_activacion = round(tiempo_activacion)  # Redondear a segundos enteros
-
-            return {
-                "activar": should_activate,
-                "tiempo_segundos": tiempo_activacion,
-                "razones": reason,
-                "condiciones": {
-                    "temperatura": temp,
-                    "humedad": hum,
-                    "suelo": soil,
-                    "luz": light
-                }
-            }
-        except Exception as e:
-            return {
-                "error": str(e),
-                "activar": False,
-                "tiempo_segundos": 0,
-                "razones": ["Error al evaluar condiciones"],
+                "activar_bomba": False,
+                "tiempo_bomba": 0,
                 "condiciones": {
                     "temperatura": float(temperatura),
                     "humedad": float(humedad),
