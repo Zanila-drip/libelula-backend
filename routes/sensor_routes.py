@@ -68,8 +68,8 @@ def get_pump_recommendation():
         # Obtener la última lectura
         latest_data = data[-1]
         
-        # Evaluar si se debe activar la bomba
-        pump_evaluation = sensor_service.fuzzy_service.should_activate_pump(
+        # Evaluar si se debe activar la bomba usando evaluate_conditions
+        pump_evaluation = sensor_service.fuzzy_service.evaluate_conditions(
             latest_data['temperatura'],
             latest_data['humedad'],
             latest_data['humedadSuelo'],
@@ -92,8 +92,8 @@ def check_pump():
         # Obtener la última lectura
         latest_data = data[-1]
         
-        # Evaluar si se debe activar la bomba
-        pump_evaluation = sensor_service.fuzzy_service.should_activate_pump(
+        # Evaluar si se debe activar la bomba usando evaluate_conditions
+        pump_evaluation = sensor_service.fuzzy_service.evaluate_conditions(
             latest_data['temperatura'],
             latest_data['humedad'],
             latest_data['humedadSuelo'],
