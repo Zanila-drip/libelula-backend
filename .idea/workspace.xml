@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="74767563-eb46-491b-85bf-1c1c31071372" name="Changes" comment="stable version backend 0.6" />
+    <list default="true" id="74767563-eb46-491b-85bf-1c1c31071372" name="Changes" comment="stable version-requirements backend 0.7" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,7 +65,7 @@
       <option name="presentableId" value="Default" />
       <updated>1746688654330</updated>
       <workItem from="1746688655379" duration="1806000" />
-      <workItem from="1746690488182" duration="4683000" />
+      <workItem from="1746690488182" duration="4996000" />
     </task>
     <task id="LOCAL-00001" summary="stable version backend 0.6">
       <option name="closed" value="true" />
@@ -91,7 +91,23 @@
       <option name="project" value="LOCAL" />
       <updated>1746696601434</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="stable version-requirements backend 0.6">
+      <option name="closed" value="true" />
+      <created>1746696719155</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746696719155</updated>
+    </task>
+    <task id="LOCAL-00005" summary="stable version-requirements backend 0.7">
+      <option name="closed" value="true" />
+      <created>1746696912923</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1746696912923</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -99,7 +115,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="stable version backend 0.6" />
-    <option name="LAST_COMMIT_MESSAGE" value="stable version backend 0.6" />
+    <MESSAGE value="stable version-requirements backend 0.6" />
+    <MESSAGE value="stable version-requirements backend 0.7" />
+    <option name="LAST_COMMIT_MESSAGE" value="stable version-requirements backend 0.7" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Libelula$main.coverage" NAME="main Coverage Results" MODIFIED="1746693832674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
