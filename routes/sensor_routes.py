@@ -83,7 +83,27 @@ def get_pump_recommendation():
 
 @sensor_bp.route('/pump', methods=['GET'])
 def check_pump():
-    # ... existing code ...
+    try:
+        # Obtener los últimos datos
+        data = sensor_service.get_all_data()
+        if not data:
+            return jsonify({"message": "No hay datos disponibles"}), 404
+        
+        # Obtener la última lectura
+        latest_data = data[-1]
+        
+        # Evaluar si se debe activar la bomba
+        pump_evaluation = sensor_service.fuzzy_service.should_activate_pump(
+            latest_data['temperatura'],
+            latest_data['humedad'],
+            latest_data['humedadSuelo'],
+            latest_data['luz']
+        )
+        
+        return jsonify(pump_evaluation), 200
+    except Exception as e:
+        logger.error(f"Error al verificar estado de la bomba: {str(e)}")
+        return jsonify({"error": str(e)}), 400
 
 @sensor_bp.route('/membership-functions', methods=['GET'])
 def get_membership_functions():
