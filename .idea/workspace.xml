@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="74767563-eb46-491b-85bf-1c1c31071372" name="Changes" comment="stable version-requirements backend 1.1">
+    <list default="true" id="74767563-eb46-491b-85bf-1c1c31071372" name="Changes" comment="change times water pomp 1.2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/fuzzy_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/fuzzy_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +113,7 @@
       <workItem from="1746690488182" duration="4996000" />
       <workItem from="1746698972214" duration="1287000" />
       <workItem from="1746700912700" duration="3090000" />
-      <workItem from="1746724569827" duration="1836000" />
+      <workItem from="1746724569827" duration="2917000" />
     </task>
     <task id="LOCAL-00001" summary="stable version backend 0.6">
       <option name="closed" value="true" />
@@ -186,7 +187,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746724595119</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="change times water pomp 1.2">
+      <option name="closed" value="true" />
+      <created>1746727630597</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1746727630597</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -200,7 +209,8 @@
     <MESSAGE value="stable version-requirements backend 0.9" />
     <MESSAGE value="stable version-requirements backend 1.0" />
     <MESSAGE value="stable version-requirements backend 1.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="stable version-requirements backend 1.1" />
+    <MESSAGE value="change times water pomp 1.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="change times water pomp 1.2" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Libelula$main.coverage" NAME="main Coverage Results" MODIFIED="1746693832674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
