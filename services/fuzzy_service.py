@@ -40,10 +40,10 @@ class FuzzyService:
         self.plant_state['regular'] = fuzz.trimf(self.plant_state.universe, [30, 50, 70])
         self.plant_state['bueno'] = fuzz.trimf(self.plant_state.universe, [60, 100, 100])
 
-        self.pump_time = ctrl.Consequent(np.arange(0, 60, 1), 'tiempo_bomba')
-        self.pump_time['corto'] = fuzz.trimf(self.pump_time.universe, [0, 0, 20])
-        self.pump_time['medio'] = fuzz.trimf(self.pump_time.universe, [15, 30, 45])
-        self.pump_time['largo'] = fuzz.trimf(self.pump_time.universe, [40, 60, 60])
+        self.pump_time = ctrl.Consequent(np.arange(0, 17, 1), 'tiempo_bomba')
+        self.pump_time['corto'] = fuzz.trimf(self.pump_time.universe, [0, 0, 8])
+        self.pump_time['medio'] = fuzz.trimf(self.pump_time.universe, [5, 8, 12])
+        self.pump_time['largo'] = fuzz.trimf(self.pump_time.universe, [10, 17, 17])
 
         # Definir reglas mejoradas
         self.rules = [
@@ -113,7 +113,7 @@ class FuzzyService:
             tiempo_bomba = float(self.plant_sim.output['tiempo_bomba'])
 
             # Determinar si se debe activar la bomba
-            should_activate = tiempo_bomba > 5  # Solo activar si el tiempo es mayor a 5 segundos
+            should_activate = tiempo_bomba > 2  # Solo activar si el tiempo es mayor a 2 segundos
 
             return {
                 "estado": round(estado, 2),
