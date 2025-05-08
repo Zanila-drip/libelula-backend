@@ -40,10 +40,10 @@ class FuzzyService:
         self.plant_state['regular'] = fuzz.trimf(self.plant_state.universe, [30, 50, 70])
         self.plant_state['bueno'] = fuzz.trimf(self.plant_state.universe, [60, 100, 100])
 
-        self.pump_time = ctrl.Consequent(np.arange(0, 17, 1), 'tiempo_bomba')
-        self.pump_time['corto'] = fuzz.trimf(self.pump_time.universe, [0, 0, 8])
-        self.pump_time['medio'] = fuzz.trimf(self.pump_time.universe, [5, 8, 12])
-        self.pump_time['largo'] = fuzz.trimf(self.pump_time.universe, [10, 17, 17])
+        self.pump_time = ctrl.Consequent(np.arange(0, 21, 1), 'tiempo_bomba')
+        self.pump_time['corto'] = fuzz.trimf(self.pump_time.universe, [3, 5, 7])
+        self.pump_time['medio'] = fuzz.trimf(self.pump_time.universe, [7, 10, 14])
+        self.pump_time['largo'] = fuzz.trimf(self.pump_time.universe, [13, 17, 20])
 
         # Definir reglas mejoradas
         self.rules = [
