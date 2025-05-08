@@ -13,7 +13,7 @@ class FuzzyService:
         # Crear conjuntos difusos para temperatura
         self.temperature = ctrl.Antecedent(self.temp_range, 'temperatura')
         self.temperature['fría'] = fuzz.trimf(self.temperature.universe, [15, 15, 25])
-        self.temperature['óptima'] = fuzz.gaussmf(self.temperature.universe, 25, 2)
+        self.temperature['óptima'] = fuzz.trimf(self.temperature.universe, [20, 25, 30])
         self.temperature['caliente'] = fuzz.trimf(self.temperature.universe, [25, 35, 40])
 
         # Crear conjuntos difusos para humedad ambiente
